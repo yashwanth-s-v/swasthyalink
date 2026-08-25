@@ -1,147 +1,52 @@
-const API_BASE = "http://127.0.0.1:8000/api";
+const API_BASE_URL = "https://swasthyalink-sph1.onrender.com";
 
 async function apiRequest(endpoint, options = {}) {
-    const token = localStorage.getItem("ayurconnect_token");
+    const url = `${API_BASE_URL}${endpoint}`;
 
-    const headers = {
-        "Content-Type": "application/json",
-        ...(options.headers || {})
+    const config = {
+        ...options,
+        headers: {
+            "Content-Type": "application/json",
+            ...(options.headers || {})
+        }
     };
 
+    const token = localStorage.getItem("access_token");
+
     if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
+        config.headers["Authorization"] = `Bearer ${token}`;
     }
-
-    const response = await fetch(`${API_BASE}${endpoint}`, {
-        ...options,
-        headers
-    });
-
-    let data;
 
     try {
-        data = await response.json();
-    } catch {
-        data = null;
-    }
+        const response = await fetch(url, config);
 
-    if (!response.ok) {
-        let message = "Something went wrong.";
+        const contentType = response.headers.get("content-type");
+        let data;
 
-        if (data) {
-            if (typeof data.detail === "string") {
-                message = data.detail;
-            } else if (Array.isArray(data.detail)) {
-                message = data.detail
-                    .map(error => {
-                        if (typeof error === "string") return error;
+        if (contentType && contentType.includes("application/json")) {
+            data = await response.json();
+        } else {
+            data = await response.text();
+        }
 
-                        const field = error.loc
-                            ? error.loc.join(".")
-                            : "field";
+        if (!response.ok) {
+            let message = "Something went wrong";
 
-                        return `${field}: ${error.msg || "Invalid value"}`;
-                    })
-                    .join(" | ");
-            } else if (typeof data.message === "string") {
-                message = data.message;
-            } else {
-                message = JSON.stringify(data);
+            if (typeof data === "object" && data?.detail) {
+                message = Array.isArray(data.detail)
+                    ? data.detail.map(error => error.msg).join(", ")
+                    : data.detail;
+            } else if (typeof data === "string" && data) {
+                message = data;
             }
+
+            throw new Error(message);
         }
 
-        throw new Error(message);
+        return data;
+
+    } catch (error) {
+        console.error("API Error:", error);
+        throw error;
     }
-
-    return data;
-}
-
-async function registerUser(payload) {
-    return apiRequest("/auth/register", {
-        method: "POST",
-        body: JSON.stringify(payload)
-    });
-}
-
-async function loginUser(payload) {
-    return apiRequest("/auth/login", {
-        method: "POST",
-        body: JSON.stringify(payload)
-    });
-}
-
-async function getCurrentUser() {
-    return apiRequest("/auth/me");
-}
-
-async function updatePatientProfile(payload) {
-    return apiRequest("/auth/patient/profile", {
-        method: "POST",
-        body: JSON.stringify(payload)
-    });
-}
-
-async function getDoctors(params = {}) {
-    const query = new URLSearchParams();
-
-    Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && value !== "") {
-            query.append(key, value);
-        }
-    });
-
-    const url = query.toString()
-        ? `/doctors/?${query.toString()}`
-        : "/doctors/";
-
-    return apiRequest(url);
-}
-
-async function getDoctor(doctorId) {
-    return apiRequest(`/doctors/${doctorId}`);
-}
-
-async function createDoctor(payload) {
-    return apiRequest("/doctors/", {
-        method: "POST",
-        body: JSON.stringify(payload)
-    });
-}
-
-async function updateDoctorAvailability(doctorId, isAvailable) {
-    return apiRequest(
-        `/doctors/${doctorId}/availability?is_available=${isAvailable}`,
-        {
-            method: "PATCH"
-        }
-    );
-}
-
-async function getPatients() {
-    return apiRequest("/patients/");
-}
-
-async function getAvailableSlots(doctorId, date) {
-    return apiRequest(`/appointments/available/${doctorId}/${date}`);
-}
-
-async function bookAppointment(payload) {
-    return apiRequest("/appointments/", {
-        method: "POST",
-        body: JSON.stringify(payload)
-    });
-}
-
-async function getPatientAppointments(patientId) {
-    return apiRequest(`/appointments/patient/${patientId}`);
-}
-
-async function getDoctorAppointments(doctorId) {
-    return apiRequest(`/appointments/doctor/${doctorId}`);
-}
-
-async function cancelAppointment(appointmentId) {
-    return apiRequest(`/appointments/${appointmentId}/cancel`, {
-        method: "PATCH"
-    });
 }
