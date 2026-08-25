@@ -1,4 +1,10 @@
 fastapi
 uvicorn[standard]
+sqlalchemy
+pydantic
 pydantic-settings
+email-validator
 python-dotenv
+python-jose[cryptography]
+passlib[bcrypt]
+google-generativeai
