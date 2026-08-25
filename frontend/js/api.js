@@ -11,7 +11,7 @@ async function apiRequest(endpoint, options = {}) {
         }
     };
 
-    const token = localStorage.getItem("access_token");
+    const token = localStorage.getItem("ayurconnect_token");
 
     if (token) {
         config.headers["Authorization"] = `Bearer ${token}`;
@@ -21,6 +21,7 @@ async function apiRequest(endpoint, options = {}) {
         const response = await fetch(url, config);
 
         const contentType = response.headers.get("content-type");
+
         let data;
 
         if (contentType && contentType.includes("application/json")) {
@@ -49,4 +50,45 @@ async function apiRequest(endpoint, options = {}) {
         console.error("API Error:", error);
         throw error;
     }
+}
+
+
+/* ==========================================
+   REGISTER USER
+========================================== */
+
+async function registerUser(userData) {
+
+    return await apiRequest("/auth/register", {
+        method: "POST",
+        body: JSON.stringify(userData)
+    });
+
+}
+
+
+/* ==========================================
+   LOGIN USER
+========================================== */
+
+async function loginUser(loginData) {
+
+    return await apiRequest("/auth/login", {
+        method: "POST",
+        body: JSON.stringify(loginData)
+    });
+
+}
+
+
+/* ==========================================
+   GET CURRENT USER
+========================================== */
+
+async function getCurrentUser() {
+
+    return await apiRequest("/auth/me", {
+        method: "GET"
+    });
+
 }
