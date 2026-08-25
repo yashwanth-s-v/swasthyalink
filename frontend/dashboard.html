@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Patient Dashboard - AyurConnect</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <a href="dashboard.html" class="logo">
+        Ayur<span>Connect</span>
+    </a>
+
+    <div class="nav-links">
+
+        <a href="doctors.html">
+            Doctors
+        </a>
+
+        <button
+            class="btn btn-outline"
+            data-logout>
+
+            Logout
+
+        </button>
+
+    </div>
+
+</nav>
+
+<main class="dashboard">
+
+<div class="container">
+
+    <div class="dashboard-header">
+
+        <div>
+
+            <h1>
+                Welcome, <span id="userName">Patient</span>
+            </h1>
+
+            <p>
+                Your health connection dashboard.
+            </p>
+
+        </div>
+
+        <a
+            href="assessment.html"
+            class="btn btn-primary">
+
+            Start Assessment
+
+        </a>
+
+    </div>
+
+    <div class="stat-grid">
+
+        <div class="stat-card">
+
+            <strong id="appointmentCount">
+                0
+            </strong>
+
+            <span>
+                Appointments
+            </span>
+
+        </div>
+
+        <div class="stat-card">
+
+            <strong>
+                24/7
+            </strong>
+
+            <span>
+                Health information
+            </span>
+
+        </div>
+
+        <div class="stat-card">
+
+            <strong>
+                ✓
+            </strong>
+
+            <span>
+                Doctor connection
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-grid">
+
+        <div class="action-card">
+
+            <h2>What would you like to do?</h2>
+
+            <div class="action-list">
+
+                <a
+                    href="assessment.html"
+                    class="btn btn-secondary">
+
+                    🩺 Check my symptoms
+
+                </a>
+
+                <a
+                    href="doctors.html"
+                    class="btn btn-secondary">
+
+                    👨‍⚕️ Find a doctor
+
+                </a>
+
+                <a
+                    href="appointment.html"
+                    class="btn btn-secondary">
+
+                    📅 Manage appointments
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="action-card">
+
+            <h2>Your profile</h2>
+
+            <div id="profileInfo"
+                 style="margin-top:18px;color:var(--muted);">
+
+                Loading profile...
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="action-card" style="margin-top:24px;">
+
+        <h2>Your appointments</h2>
+
+        <div
+            id="appointments"
+            class="loading">
+
+            Loading appointments...
+
+        </div>
+
+    </div>
+
+</div>
+
+</main>
+
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/dashboard.js"></script>
+
+</body>
+</html>

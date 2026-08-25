@@ -1,0 +1,25 @@
+TOPIC: HEALTH SAFETY
+
+AI systems used in healthcare should not replace qualified
+medical professionals.
+
+Emergency symptoms require immediate professional
+medical attention.
+
+Potentially serious symptoms may include severe chest
+pain, difficulty breathing, loss of consciousness,
+severe bleeding, seizures, stroke-like symptoms or
+other rapidly worsening conditions.
+
+When serious symptoms are identified, the user should
+be encouraged to seek appropriate urgent medical care.
+
+AI-generated information should not be used to diagnose
+disease or determine medication dosage.
+
+Users should not be advised to stop, start or modify
+prescription medication based solely on AI-generated
+information.
+
+When uncertainty exists, professional medical evaluation
+should be preferred over automated guidance.

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Health Assessment - AyurConnect</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <a href="dashboard.html" class="logo">
+        Ayur<span>Connect</span>
+    </a>
+
+    <div class="nav-links">
+
+        <a href="doctors.html">
+            Doctors
+        </a>
+
+        <button
+            class="btn btn-outline"
+            data-logout>
+
+            Logout
+
+        </button>
+
+    </div>
+
+</nav>
+
+<main class="dashboard">
+
+<div class="container">
+
+    <div class="dashboard-header">
+
+        <div>
+
+            <h1>Health Assessment</h1>
+
+            <p>
+                Describe what you are experiencing.
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="action-card">
+
+        <div class="form-group">
+
+            <label>
+                What symptoms are you experiencing?
+            </label>
+
+            <textarea
+                id="symptoms"
+                rows="7"
+                placeholder="Example: I have had fever for 3 days and feel very weak...">
+            </textarea>
+
+        </div>
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label>
+                    How long have you had these symptoms?
+                </label>
+
+                <select id="duration">
+
+                    <option value="less_than_day">
+                        Less than 1 day
+                    </option>
+
+                    <option value="1_2_days">
+                        1–2 days
+                    </option>
+
+                    <option value="3_6_days">
+                        3–6 days
+                    </option>
+
+                    <option value="7_plus_days">
+                        7+ days
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    Age
+                </label>
+
+                <input
+                    id="age"
+                    type="number"
+                    min="0"
+                    max="120"
+                    placeholder="Age">
+
+            </div>
+
+        </div>
+
+        <button
+            id="assessButton"
+            class="btn btn-primary">
+
+            Assess Symptoms
+
+        </button>
+
+    </div>
+
+    <div
+        id="assessmentResult"
+        style="margin-top:25px;">
+    </div>
+
+</div>
+
+</main>
+
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/assessment.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Book Consultation - AyurConnect</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <a href="dashboard.html" class="logo">
+        Ayur<span>Connect</span>
+    </a>
+
+    <div class="nav-links">
+
+        <a href="doctors.html">
+            Doctors
+        </a>
+
+        <button
+            class="btn btn-outline"
+            data-logout>
+
+            Logout
+
+        </button>
+
+    </div>
+
+</nav>
+
+<main class="dashboard">
+
+<div class="container">
+
+    <div class="dashboard-header">
+
+        <div>
+
+            <h1>Book Consultation</h1>
+
+            <p>
+                Select a date and available consultation slot.
+            </p>
+
+        </div>
+
+    </div>
+
+    <div id="appointmentMessage"
+         class="message">
+    </div>
+
+    <div class="dashboard-grid">
+
+        <div class="action-card">
+
+            <h2>Doctor</h2>
+
+            <div id="doctorDetails"
+                 style="margin-top:15px;">
+
+                Loading doctor...
+
+            </div>
+
+            <br>
+
+            <div class="form-group">
+
+                <label>
+                    Consultation Date
+                </label>
+
+                <input
+                    id="appointmentDate"
+                    type="date">
+
+            </div>
+
+            <h3>
+                Available Time Slots
+            </h3>
+
+            <div
+                id="slotGrid"
+                class="slot-grid">
+
+                Select a date.
+
+            </div>
+
+        </div>
+
+        <div class="action-card">
+
+            <h2>Consultation details</h2>
+
+            <br>
+
+            <div class="form-group">
+
+                <label>
+                    Consultation Type
+                </label>
+
+                <select id="consultationType">
+
+                    <option value="chat">
+                        Chat consultation
+                    </option>
+
+                    <option value="video">
+                        Video consultation
+                    </option>
+
+                    <option value="in_person">
+                        In-person consultation
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    Reason
+                </label>
+
+                <textarea
+                    id="reason"
+                    rows="6"
+                    placeholder="Briefly describe why you want to consult the doctor...">
+                </textarea>
+
+            </div>
+
+            <button
+                id="bookButton"
+                class="btn btn-primary full-btn">
+
+                Book Consultation
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+</main>
+
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/appointment.js"></script>
+
+</body>
+</html>

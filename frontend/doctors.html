@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Find Doctors - AyurConnect</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <a href="index.html" class="logo">
+        Ayur<span>Connect</span>
+    </a>
+
+    <div class="nav-links">
+
+        <a href="dashboard.html">
+            Dashboard
+        </a>
+
+        <button
+            class="btn btn-outline"
+            data-logout>
+
+            Logout
+
+        </button>
+
+    </div>
+
+</nav>
+
+<main class="dashboard">
+
+<div class="container">
+
+    <div class="dashboard-header">
+
+        <div>
+
+            <h1>Find a Doctor</h1>
+
+            <p>
+                Connect with available healthcare professionals.
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="action-card"
+         style="margin-bottom:25px;">
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label>
+                    Specialization
+                </label>
+
+                <input
+                    id="specialization"
+                    placeholder="e.g. General Medicine">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    City
+                </label>
+
+                <input
+                    id="city"
+                    placeholder="e.g. Bengaluru">
+
+            </div>
+
+        </div>
+
+        <button
+            id="searchDoctors"
+            class="btn btn-primary">
+
+            Search Doctors
+
+        </button>
+
+    </div>
+
+    <div id="doctorMessage"
+         class="message">
+    </div>
+
+    <div
+        id="doctorGrid"
+        class="doctor-grid">
+
+        <div class="loading">
+            Loading doctors...
+        </div>
+
+    </div>
+
+</div>
+
+</main>
+
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/doctors.js"></script>
+
+</body>
+</html>

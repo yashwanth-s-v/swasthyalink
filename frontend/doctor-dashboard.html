@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Doctor Dashboard - AyurConnect</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <a href="doctor-dashboard.html"
+       class="logo">
+
+        Ayur<span>Connect</span>
+
+    </a>
+
+    <div class="nav-links">
+
+        <button
+            class="btn btn-outline"
+            data-logout>
+
+            Logout
+
+        </button>
+
+    </div>
+
+</nav>
+
+<main class="dashboard">
+
+<div class="container">
+
+    <div class="dashboard-header">
+
+        <div>
+
+            <h1>
+                Doctor Dashboard
+            </h1>
+
+            <p id="doctorWelcome">
+                Welcome.
+            </p>
+
+        </div>
+
+    </div>
+
+    <div
+        id="doctorMessage"
+        class="message">
+    </div>
+
+    <div class="dashboard-grid">
+
+        <div class="action-card">
+
+            <h2>
+                Your Availability
+            </h2>
+
+            <p style="margin:10px 0 20px;color:var(--muted);">
+
+                Let patients know whether you are currently
+                accepting consultations.
+
+            </p>
+
+            <button
+                id="availabilityButton"
+                class="btn btn-primary">
+
+                Loading...
+
+            </button>
+
+        </div>
+
+        <div class="action-card">
+
+            <h2>
+                Doctor Profile
+            </h2>
+
+            <div
+                id="doctorProfile"
+                style="margin-top:15px;">
+
+                Loading...
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div
+        class="action-card"
+        style="margin-top:25px;">
+
+        <h2>
+            Patient Appointments
+        </h2>
+
+        <div
+            id="doctorAppointments"
+            class="loading">
+
+            Loading appointments...
+
+        </div>
+
+    </div>
+
+</div>
+
+</main>
+
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/doctor-dashboard.js"></script>
+
+</body>
+</html>
