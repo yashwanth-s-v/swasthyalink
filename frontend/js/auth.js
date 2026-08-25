@@ -4,205 +4,96 @@
 
 
 /* ==========================================
-   REGISTER
+   MESSAGE
 ========================================== */
 
-async function handleRegister(event) {
+function showMessage(element, message, type = "error") {
 
-    event.preventDefault();
+    if (!element) return;
 
-    const fullNameElement = document.getElementById("full_name");
-    const nameElement = document.getElementById("name");
+    element.textContent = message;
 
-    const emailElement = document.getElementById("email");
-    const passwordElement = document.getElementById("password");
-    const roleElement = document.getElementById("role");
-
-    /*
-     * Some versions of the register page may use
-     * "name" instead of "full_name".
-     *
-     * We support both.
-     */
-
-    const fullName =
-        fullNameElement?.value ||
-        nameElement?.value ||
-        "";
-
-    const email =
-        emailElement?.value ||
-        "";
-
-    const password =
-        passwordElement?.value ||
-        "";
-
-    const role =
-        roleElement?.value ||
-        "patient";
-
-
-    if (!fullName.trim()) {
-        alert("Please enter your full name.");
-        return;
-    }
-
-    if (!email.trim()) {
-        alert("Please enter your email.");
-        return;
-    }
-
-    if (!password) {
-        alert("Please enter your password.");
-        return;
-    }
-
-
-    const userData = {
-
-        /*
-         * IMPORTANT:
-         * Backend expects full_name,
-         * NOT name.
-         */
-        full_name: fullName.trim(),
-
-        email: email.trim(),
-
-        password: password,
-
-        role: role
-
-    };
-
-
-    try {
-
-        console.log("Registering user:", {
-            full_name: userData.full_name,
-            email: userData.email,
-            role: userData.role
-        });
-
-
-        const result = await registerUser(userData);
-
-
-        console.log("Registration successful:", result);
-
-
-        alert("Registration successful! Please login.");
-
-        window.location.href = "login.html";
-
-
-    } catch (error) {
-
-        console.error("Registration failed:", error);
-
-        alert(
-            "Registration failed: " +
-            (error.message || "Unable to connect to server.")
-        );
-
-    }
-
+    element.className = `message ${type}`;
 }
 
 
 /* ==========================================
-   LOGIN
+   LOGOUT
 ========================================== */
 
-async function handleLogin(event) {
+function logout() {
 
-    event.preventDefault();
+    localStorage.removeItem("ayurconnect_token");
+    localStorage.removeItem("ayurconnect_user");
+    localStorage.removeItem("ayurconnect_patient");
+    localStorage.removeItem("ayurconnect_doctor");
 
-
-    const emailElement =
-        document.getElementById("email");
-
-    const passwordElement =
-        document.getElementById("password");
-
-
-    const email =
-        emailElement?.value?.trim() || "";
-
-    const password =
-        passwordElement?.value || "";
+    window.location.href = "index.html";
+}
 
 
-    if (!email) {
-        alert("Please enter your email.");
-        return;
+/* ==========================================
+   REQUIRE AUTHENTICATION
+========================================== */
+
+async function requireAuth() {
+
+    const token =
+        localStorage.getItem("ayurconnect_token");
+
+    if (!token) {
+
+        window.location.href = "login.html";
+
+        return null;
     }
-
-    if (!password) {
-        alert("Please enter your password.");
-        return;
-    }
-
 
     try {
 
-        const result = await loginUser({
+        const user =
+            await getCurrentUser();
 
-            email: email,
+        localStorage.setItem(
+            "ayurconnect_user",
+            JSON.stringify(user)
+        );
 
-            password: password
+        return user;
 
-        });
+    } catch (error) {
 
+        localStorage.removeItem(
+            "ayurconnect_token"
+        );
 
-        console.log("Login successful:", result);
+        localStorage.removeItem(
+            "ayurconnect_user"
+        );
 
+        window.location.href = "login.html";
 
-        /*
-         * Backend may return the token
-         * under different common names.
-         */
-
-        const token =
-            result.access_token ||
-            result.token;
-
-
-        if (token) {
-
-            localStorage.setItem(
-                "ayurconnect_token",
-                token
-            );
-
-        }
+        return null;
+    }
+}
 
 
-        if (result.user) {
+/* ==========================================
+   REDIRECT IF ALREADY LOGGED IN
+========================================== */
 
-            localStorage.setItem(
-                "ayurconnect_user",
-                JSON.stringify(result.user)
-            );
+async function redirectIfLoggedIn() {
 
-        }
+    const token =
+        localStorage.getItem("ayurconnect_token");
 
+    if (!token) return;
 
-        alert("Login successful!");
+    try {
 
+        const user =
+            await getCurrentUser();
 
-        /*
-         * Redirect based on role if available.
-         */
-
-        const role =
-            result.user?.role ||
-            result.role ||
-            "patient";
-
-
-        if (role === "doctor") {
+        if (user.role === "doctor") {
 
             window.location.href =
                 "doctor-dashboard.html";
@@ -214,72 +105,370 @@ async function handleLogin(event) {
 
         }
 
+    } catch {
 
-    } catch (error) {
-
-        console.error("Login failed:", error);
-
-        alert(
-            "Login failed: " +
-            (error.message || "Unable to connect to server.")
+        localStorage.removeItem(
+            "ayurconnect_token"
         );
 
+        localStorage.removeItem(
+            "ayurconnect_user"
+        );
     }
-
 }
 
 
 /* ==========================================
-   LOGOUT
-========================================== */
-
-function logoutUser() {
-
-    localStorage.removeItem(
-        "ayurconnect_token"
-    );
-
-    localStorage.removeItem(
-        "ayurconnect_user"
-    );
-
-    window.location.href =
-        "login.html";
-}
-
-
-/* ==========================================
-   REGISTER PAGE
+   PAGE INITIALIZATION
 ========================================== */
 
 document.addEventListener(
     "DOMContentLoaded",
-    function () {
+    () => {
+
+        /* ================================
+           REGISTER
+        ================================= */
 
         const registerForm =
-            document.getElementById("registerForm");
+            document.getElementById(
+                "registerForm"
+            );
+
 
         if (registerForm) {
 
+            redirectIfLoggedIn();
+
+
             registerForm.addEventListener(
                 "submit",
-                handleRegister
-            );
+                async (event) => {
 
+                    event.preventDefault();
+
+
+                    const message =
+                        document.getElementById(
+                            "registerMessage"
+                        );
+
+
+                    const button =
+                        document.getElementById(
+                            "registerButton"
+                        );
+
+
+                    const fullName =
+                        document
+                            .getElementById(
+                                "full_name"
+                            )
+                            .value
+                            .trim();
+
+
+                    const email =
+                        document
+                            .getElementById(
+                                "email"
+                            )
+                            .value
+                            .trim();
+
+
+                    const password =
+                        document
+                            .getElementById(
+                                "password"
+                            )
+                            .value;
+
+
+                    const role =
+                        document
+                            .getElementById(
+                                "role"
+                            )
+                            .value;
+
+
+                    if (
+                        !fullName ||
+                        !email ||
+                        !password
+                    ) {
+
+                        showMessage(
+                            message,
+                            "Please fill in all required fields."
+                        );
+
+                        return;
+                    }
+
+
+                    if (password.length < 6) {
+
+                        showMessage(
+                            message,
+                            "Password must contain at least 6 characters."
+                        );
+
+                        return;
+                    }
+
+
+                    button.disabled = true;
+
+                    button.textContent =
+                        "Creating account...";
+
+
+                    try {
+
+                        const user =
+                            await registerUser({
+
+                                email: email,
+
+                                password: password,
+
+                                full_name: fullName,
+
+                                role: role
+
+                            });
+
+
+                        console.log(
+                            "REGISTRATION SUCCESS:",
+                            user
+                        );
+
+
+                        localStorage.setItem(
+                            "ayurconnect_user",
+                            JSON.stringify(user)
+                        );
+
+
+                        if (role === "doctor") {
+
+                            localStorage.setItem(
+                                "pending_doctor_registration",
+                                "true"
+                            );
+
+
+                            showMessage(
+                                message,
+                                "Account created. Please login to continue.",
+                                "success"
+                            );
+
+                        } else {
+
+                            showMessage(
+                                message,
+                                "Account created successfully. Redirecting to login...",
+                                "success"
+                            );
+                        }
+
+
+                        setTimeout(
+                            () => {
+
+                                window.location.href =
+                                    "login.html";
+
+                            },
+                            1000
+                        );
+
+
+                    } catch (error) {
+
+                        console.error(
+                            "REGISTRATION ERROR:",
+                            error
+                        );
+
+
+                        showMessage(
+                            message,
+                            error.message ||
+                            "Registration failed. Please try again."
+                        );
+
+
+                    } finally {
+
+                        button.disabled = false;
+
+                        button.textContent =
+                            "Create Account";
+                    }
+
+                }
+            );
         }
 
 
+        /* ================================
+           LOGIN
+        ================================= */
+
         const loginForm =
-            document.getElementById("loginForm");
+            document.getElementById(
+                "loginForm"
+            );
+
 
         if (loginForm) {
 
+            redirectIfLoggedIn();
+
+
             loginForm.addEventListener(
                 "submit",
-                handleLogin
-            );
+                async (event) => {
 
+                    event.preventDefault();
+
+
+                    const message =
+                        document.getElementById(
+                            "loginMessage"
+                        );
+
+
+                    const button =
+                        document.getElementById(
+                            "loginButton"
+                        );
+
+
+                    const email =
+                        document
+                            .getElementById(
+                                "loginEmail"
+                            )
+                            .value
+                            .trim();
+
+
+                    const password =
+                        document
+                            .getElementById(
+                                "loginPassword"
+                            )
+                            .value;
+
+
+                    if (!email || !password) {
+
+                        showMessage(
+                            message,
+                            "Please enter your email and password."
+                        );
+
+                        return;
+                    }
+
+
+                    button.disabled = true;
+
+                    button.textContent =
+                        "Signing in...";
+
+
+                    try {
+
+                        const result =
+                            await loginUser({
+
+                                email: email,
+
+                                password: password
+
+                            });
+
+
+                        localStorage.setItem(
+                            "ayurconnect_token",
+                            result.access_token
+                        );
+
+
+                        const user =
+                            await getCurrentUser();
+
+
+                        localStorage.setItem(
+                            "ayurconnect_user",
+                            JSON.stringify(user)
+                        );
+
+
+                        if (
+                            user.role ===
+                            "doctor"
+                        ) {
+
+                            window.location.href =
+                                "doctor-dashboard.html";
+
+                        } else {
+
+                            window.location.href =
+                                "dashboard.html";
+                        }
+
+
+                    } catch (error) {
+
+                        console.error(
+                            "LOGIN ERROR:",
+                            error
+                        );
+
+
+                        showMessage(
+                            message,
+                            error.message ||
+                            "Login failed."
+                        );
+
+
+                    } finally {
+
+                        button.disabled = false;
+
+                        button.textContent =
+                            "Login";
+                    }
+                }
+            );
         }
+
+
+        /* ================================
+           LOGOUT BUTTONS
+        ================================= */
+
+        document
+            .querySelectorAll("[data-logout]")
+            .forEach(button => {
+
+                button.addEventListener(
+                    "click",
+                    logout
+                );
+
+            });
 
     }
 );
